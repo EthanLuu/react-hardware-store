@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "~antd/dist/antd.css";
+
+img {
+    display: inline-block;
+}
+
+.ant-btn-primary {
+    background-color: rgb(59 130 246);
+    border: none;
+}
+
+.ant-btn-default {
+    background-color: #fff;
+}
+
+.ant-switch[type='button'] {
+    background-color: rgba(0, 0, 0, 0.25);
+}
+
+.ant-switch-checked[type='button'] {
+    background-color: #1890ff;
+}
