@@ -23,3 +23,9 @@ img {
 .ant-switch-checked[type='button'] {
     background-color: #1890ff;
 }
+
+.ant-pagination-item-link[type='button'] {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

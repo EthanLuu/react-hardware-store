@@ -16,7 +16,7 @@ export const ProductCard = ({ product }: { product: Product }) => {
                     <img
                         alt={product.title}
                         src={product.image}
-                        className="block object-cover h-32 w-full rounded-sm overflow-hidden"
+                        className="block object-cover h-44 w-full rounded-sm overflow-hidden"
                     />
                 }
             >

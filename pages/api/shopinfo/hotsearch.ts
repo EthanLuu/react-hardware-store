@@ -31,10 +31,7 @@ const addOneHotSearch = async (req: NextApiRequest, collection: Collection) => {
     return { data: savedHotsearch };
 };
 
-const deleteHotSearch = async (
-    req: NextApiRequest,
-    collection: Collection
-) => {
+const deleteHotSearch = async (req: NextApiRequest, collection: Collection) => {
     let data;
     if (req.body.key) {
         data = await collection.deleteMany({ key: req.body.key });

@@ -4,6 +4,7 @@ import clientPromise from "../../lib/mongodb";
 import { NextRouter, useRouter } from "next/router";
 import { ReactElement } from "react";
 import { Layout } from "../../components/Layout";
+import { api } from "../../lib/api";
 
 const SeachTag = ({
     searchKey,
@@ -75,9 +76,9 @@ export default function ProductDetailPage({ product }) {
                 <Descriptions.Item label={"品牌"} className="bg-white">
                     {product.brand}
                 </Descriptions.Item>
-                <Descriptions.Item label={"参考价格"} className="bg-white">
+                {/* <Descriptions.Item label={"参考价格"} className="bg-white">
                     {`${product.price.toFixed(2)}元`}
-                </Descriptions.Item>
+                </Descriptions.Item> */}
                 {product?.note ? (
                     <Descriptions.Item label={"备注"} className="bg-white">
                         {product.note}
@@ -98,21 +99,14 @@ export default function ProductDetailPage({ product }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    try {
-        await clientPromise;
-        const response = await fetch(
-            `${process.env.API_BASE}/products/${context.params.id}`
-        );
-        const product = (await response.json()).data;
-        return {
-            props: { product }
-        };
-    } catch (error) {
-        console.log(error);
-        return {
-            props: { product: {} }
-        };
-    }
+    await clientPromise;
+    const { data: productsData } = await api.get(
+        `/products/${context.params.id}`
+    );
+    const { data: product } = productsData;
+    return {
+        props: { product }
+    };
 };
 
 ProductDetailPage.getLayout = (page: ReactElement) => {

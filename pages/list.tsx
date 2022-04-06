@@ -1,12 +1,14 @@
 import { Pagination } from "antd";
+import axios from "axios";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { ListMenu } from "../components/ListMenu";
 import { ProductList } from "../components/ProductList";
+import { api } from "../lib/api";
 import clientPromise from "../lib/mongodb";
-import { getFetchUrl, mergeQueryString } from "../lib/utils";
+import { mergeQueryString } from "../lib/utils";
 
 export default function List({ products, menu, count }) {
     const router = useRouter();
@@ -15,7 +17,7 @@ export default function List({ products, menu, count }) {
     useEffect(() => {
         const { page = 1 } = router.query;
         setPage(Number.parseInt(page as string));
-    }, [router.query]);
+    }, [router]);
 
     return (
         <div className="w-full">
@@ -42,24 +44,19 @@ export default function List({ products, menu, count }) {
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    try {
-        await clientPromise;
-        const fetchUrl = getFetchUrl(
-            `${process.env.API_BASE}/products`,
-            Object.assign({ page: 1 }, context.query)
-        );
-        const productResponse = await fetch(fetchUrl.toString());
-        const menuResponse = await fetch(
-            `${process.env.API_BASE}/products/menu`
-        );
-        const { data: products, count } = await productResponse.json();
-        const menu = await menuResponse.json();
-        return {
-            props: { products, menu, count }
-        };
-    } catch (error) {
-        console.log(error);
-    }
+    await clientPromise;
+    const { data: productsData } = await api.get("/products", {
+        params: {
+            ...context.query,
+            page: context.query?.page || 1
+        }
+    });
+    const { data: menuData } = await api.get("/products/menu");
+    const { data: products = [], count = 0 } = productsData;
+    const { data: menu = {} } = menuData;
+    return {
+        props: { products, menu, count }
+    };
 };
 
 List.getLayout = function getLayout(page: ReactElement) {

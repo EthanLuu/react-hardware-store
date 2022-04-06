@@ -4,14 +4,18 @@ import { Footer } from "./Footer";
 import { Header } from "./Header";
 import { AdminSider } from "./Sider";
 
-export const Layout = ({ children }) => {
+export const Layout = ({ children, ...props }) => {
     return (
         <AntdLayout className="min-h-screen">
             <Header />
-            <AntdLayout.Content className="flex flex-col p-4 sm:px-8 md:px-16 items-center">
+            <AntdLayout.Content
+                style={{ marginTop: "64px" }}
+                className="flex flex-col p-4 sm:px-8 md:px-16 items-center"
+                {...props}
+            >
                 {children}
-                <ContactHelper />
             </AntdLayout.Content>
+            <ContactHelper />
             <Footer />
         </AntdLayout>
     );

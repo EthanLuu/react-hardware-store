@@ -32,9 +32,7 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 
 const getCarouselProducts = async (colletion: Collection<Product>) => {
     const products = await colletion.find({ inCarousel: true }).toArray();
-    return {
-        data: products
-    };
+    return { data: products };
 };
 
 const getAllProducts = async (
@@ -57,10 +55,7 @@ const getAllProducts = async (
         .limit(limit)
         .toArray();
     const count = (await colletion.find(filter).toArray()).length;
-    return {
-        data: products,
-        count
-    };
+    return { data: products, count };
 };
 
 const addOneProduct = async (

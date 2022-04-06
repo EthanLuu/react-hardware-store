@@ -21,7 +21,7 @@ const MenuItem: React.FC<{
 export const ListMenu = ({
     menu
 }: {
-    menu: { categories: string[]; brands: string[] };
+    menu: { categories?: string[]; brands?: string[] };
 }) => {
     const router = useRouter();
     const [selectedMenu, setSelectedMenu] = useState(null);
@@ -43,7 +43,7 @@ export const ListMenu = ({
                         searchKey={"category"}
                         selected={selectedMenu === null}
                     />
-                    {menu.categories.map((c: string) => (
+                    {menu.categories?.map((c: string) => (
                         <MenuItem
                             key={c}
                             value={c}
@@ -53,7 +53,7 @@ export const ListMenu = ({
                     ))}
                 </div>
             </Row>
-            <Divider className="my-1"/>
+            <Divider className="my-1" />
             <Row className="py-1">
                 <span className="font-semibold">按品牌筛选：</span>
                 <div className="flex gap-3">
@@ -62,7 +62,7 @@ export const ListMenu = ({
                         searchKey={"brand"}
                         selected={selectedMenu === null}
                     />
-                    {menu.brands.map((b: string) => (
+                    {menu.brands?.map((b: string) => (
                         <MenuItem
                             key={b}
                             value={b}

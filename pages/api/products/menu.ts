@@ -10,7 +10,9 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
     const categories = await collection.distinct("category");
     const brands = await collection.distinct("brand");
     res.json({
-        categories,
-        brands
+        data: {
+            categories,
+            brands
+        }
     });
 };

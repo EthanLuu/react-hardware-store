@@ -17,7 +17,7 @@ export const NoticeBoard = ({ notice }) => {
                 {rows.map((row: string, idx: number) => {
                     return (
                         <Row key={idx} className="py-1">
-                            <Text className="text-white text-md sm:text-lg lg:text-xl">
+                            <Text className="text-white text-lg lg:text-xl">
                                 {row}
                             </Text>
                         </Row>

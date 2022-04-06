@@ -22,8 +22,6 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
                 ]
             })
             .toArray();
-        res.json({
-            data: products
-        });
+        res.json({ data: products });
     }
 };

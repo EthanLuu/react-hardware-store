@@ -23,8 +23,8 @@ export default async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 const getAllContactInfo = async (colletion: Collection) => {
-    const contactInfo = await colletion.find({}).toArray();
-    return { data: contactInfo };
+    const contact = await colletion.find({}).toArray();
+    return { data: contact };
 };
 
 const addOneContactInfo = async (

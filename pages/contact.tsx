@@ -2,8 +2,9 @@ import { Descriptions, Image } from "antd";
 import { ReactElement } from "react";
 import { Layout } from "../components/Layout";
 import clientPromise from "../lib/mongodb";
+import { api } from "../lib/api";
 
-export default function Contact({ contactInfo }) {
+export default function Contact({ contacts }) {
     return (
         <>
             <div className="py-4 pt-2 pb-6 font-bold text-3xl">
@@ -16,7 +17,7 @@ export default function Contact({ contactInfo }) {
                 className="max-w-4xl flex-auto"
                 labelStyle={{ fontWeight: 600, fontSize: "1rem" }}
             >
-                {contactInfo.map((item) => (
+                {contacts.map((item) => (
                     <Descriptions.Item
                         key={item.key}
                         label={item.name}
@@ -56,18 +57,12 @@ export default function Contact({ contactInfo }) {
 }
 
 export async function getServerSideProps() {
-    try {
-        await clientPromise;
-        const response = await fetch(
-            `${process.env.API_BASE}/shopinfo/contact`
-        );
-        const contactInfo = (await response.json()).data;
-        return {
-            props: { contactInfo }
-        };
-    } catch (error) {
-        console.log(error);
-    }
+    await clientPromise;
+    const { data: contactsData } = await api.get("/shopinfo/contact");
+    const { data: contacts = [] } = contactsData;
+    return {
+        props: { contacts }
+    };
 }
 
 Contact.getLayout = function getLayout(page: ReactElement) {

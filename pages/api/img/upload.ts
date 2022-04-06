@@ -22,7 +22,9 @@ const uploadMiddleware = upload.single("image");
 apiRoute.use(uploadMiddleware);
 
 apiRoute.post((req, res) => {
-    res.status(200).json({ data: "success" });
+    res.status(200).json({
+        message: "success"
+    });
 });
 
 export default apiRoute;

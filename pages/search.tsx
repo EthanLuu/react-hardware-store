@@ -1,14 +1,14 @@
-import { Layout, Pagination } from "antd";
+import { Pagination } from "antd";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { Footer } from "../components/Footer";
-import { Header } from "../components/Header";
+import { ReactElement, useEffect, useState } from "react";
+import { Layout } from "../components/Layout";
 import { ProductList } from "../components/ProductList";
+import { api } from "../lib/api";
 import clientPromise from "../lib/mongodb";
 import { Product } from "./api/products";
 
-export default function List({ products }: { products: Product[] }) {
+export default function Search({ products }: { products: Product[] }) {
     const router = useRouter();
     const [page, setPage] = useState(1);
     const [currentProducts, setCurrentProducts] = useState([]);
@@ -20,41 +20,38 @@ export default function List({ products }: { products: Product[] }) {
     }, [page]);
 
     return (
-        <Layout className="min-h-screen">
-            <Header />
-            <Layout.Content className="flex flex-col px-4 sm:px-8 md:px-16 gap-4 py-4">
-                <div className="flex justify-center items-center text-2xl font-semibold">
-                    <h1>搜索关键词：{router.query.key}</h1>
-                </div>
-                <ProductList products={currentProducts} />
-                <Pagination
-                    className="flex justify-center items-center"
-                    defaultCurrent={1}
-                    current={page}
-                    pageSize={pageSize}
-                    total={products.length}
-                    onChange={(page) => {
-                        setPage(page);
-                    }}
-                />
-            </Layout.Content>
-            <Footer />
-        </Layout>
+        <div className="w-full">
+            <div className="flex justify-center items-center text-2xl font-semibold mb-4">
+                <h1>搜索关键词：{router.query.key}</h1>
+            </div>
+            <ProductList products={currentProducts} />
+            <Pagination
+                className="flex justify-center items-center"
+                defaultCurrent={1}
+                current={page}
+                pageSize={pageSize}
+                total={products.length}
+                showTotal={(total) => `总共 ${total} 个商品`}
+                onChange={(page) => {
+                    setPage(page);
+                }}
+            />
+        </div>
     );
 }
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-    try {
-        await clientPromise;
-        const fetchUrl = new URL(
-            `${process.env.API_BASE}/products/search?key=${context.query?.key}`
-        );
-        const response = await fetch(fetchUrl.toString());
-        const { data: products } = await response.json();
-        return {
-            props: { products }
-        };
-    } catch (error) {
-        console.log(error);
-    }
+    await clientPromise;
+    const { data: productsData } = await api.get("/products/search", {
+        params: {
+            key: context.query.key
+        }
+    });
+    return {
+        props: { products: productsData.data || [] }
+    };
+};
+
+Search.getLayout = function getLayout(page: ReactElement) {
+    return <Layout>{page}</Layout>;
 };
