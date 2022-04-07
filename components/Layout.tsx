@@ -1,4 +1,5 @@
 import { Layout as AntdLayout } from "antd";
+import Head from "next/head";
 import { ContactHelper } from "./ContactHepler";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
@@ -24,6 +25,9 @@ export const Layout = ({ children, ...props }) => {
 export const AdminLayout = ({ children }) => {
     return (
         <AntdLayout className="min-h-screen">
+            <Head>
+                <title>东鑫商行后台管理</title>
+            </Head>
             <AdminSider />
             <AntdLayout className="flex-auto p-4 items-center bg-white">
                 {children}

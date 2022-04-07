@@ -5,6 +5,8 @@ import { NextRouter, useRouter } from "next/router";
 import { ReactElement } from "react";
 import { Layout } from "../../components/Layout";
 import { api } from "../../lib/api";
+import Head from "next/head";
+import { Product } from "../api/products";
 
 const SeachTag = ({
     searchKey,
@@ -28,10 +30,17 @@ const SeachTag = ({
     );
 };
 
-export default function ProductDetailPage({ product }) {
+export default function ProductDetailPage({ product }: { product: Product }) {
     const router = useRouter();
     return (
         <div className="max-w-3xl w-full">
+            <Head>
+                <title>{`${product.title}-东鑫商行`}</title>
+                <meta
+                    name="description"
+                    content={`${product.title}，${product.category}，${product.brand}，${product.note}`}
+                ></meta>
+            </Head>
             <PageHeader
                 onBack={() => {
                     if (window.history.length <= 2) {
@@ -76,9 +85,6 @@ export default function ProductDetailPage({ product }) {
                 <Descriptions.Item label={"品牌"} className="bg-white">
                     {product.brand}
                 </Descriptions.Item>
-                {/* <Descriptions.Item label={"参考价格"} className="bg-white">
-                    {`${product.price.toFixed(2)}元`}
-                </Descriptions.Item> */}
                 {product?.note ? (
                     <Descriptions.Item label={"备注"} className="bg-white">
                         {product.note}

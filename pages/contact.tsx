@@ -3,10 +3,14 @@ import { ReactElement } from "react";
 import { Layout } from "../components/Layout";
 import clientPromise from "../lib/mongodb";
 import { api } from "../lib/api";
+import Head from "next/head";
 
 export default function Contact({ contacts }) {
     return (
         <>
+            <Head>
+                <title>联系方式-东鑫商行</title>
+            </Head>
             <div className="py-4 pt-2 pb-6 font-bold text-3xl">
                 张家港市东鑫电器商行
             </div>

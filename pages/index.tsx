@@ -9,10 +9,14 @@ import { ProductCenter } from "../components/ProductCenter";
 import { Button } from "antd";
 import Link from "next/link";
 import { About } from "../components/About";
+import Head from "next/head";
 
 export default function Home({ products, notice, hotsearches }) {
     return (
         <div className="w-full">
+            <Head>
+                <title>东鑫商行</title>
+            </Head>
             <div className="flex flex-col bg-white relative">
                 <HomeCarousel />
             </div>

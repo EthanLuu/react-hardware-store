@@ -1,5 +1,6 @@
 import { Pagination } from "antd";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
@@ -21,6 +22,9 @@ export default function Search({ products }: { products: Product[] }) {
 
     return (
         <div className="w-full">
+            <Head>
+                <title>搜索-东鑫商行</title>
+            </Head>
             <div className="flex justify-center items-center text-2xl font-semibold mb-4">
                 <h1>搜索关键词：{router.query.key}</h1>
             </div>

@@ -1,6 +1,7 @@
 import { Pagination } from "antd";
 import axios from "axios";
 import { GetServerSideProps } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
@@ -21,6 +22,9 @@ export default function List({ products, menu, count }) {
 
     return (
         <div className="w-full">
+            <Head>
+                <title>商品列表-东鑫商行</title>
+            </Head>
             <div className="mb-4">
                 <ListMenu menu={menu} />
             </div>
