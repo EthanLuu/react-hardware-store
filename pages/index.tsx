@@ -31,14 +31,14 @@ export default function Home({ products, notice, hotsearches }) {
             <div className="flex justify-center items-center py-8 flex-col bg-slate-50 px-6 lg:px-12 xl:px-24">
                 <h2 className="text-3xl font-bold text-gray-600">关于本店</h2>
                 <div className="w-24 h-1 bg-blue-400 m-4"></div>
-                <div className="py-4">
+                <div className="pt-4 w-full">
                     <About />
                 </div>
             </div>
             <div className="flex justify-center items-center py-8 flex-col bg-slate-200">
                 <h2 className="text-3xl font-bold text-gray-600">热门搜索</h2>
                 <div className="w-24 h-1 bg-blue-400 m-4"></div>
-                <div className="py-4">
+                <div className="pt-4 w-full">
                     <RecommendTags tags={hotsearches} />
                 </div>
             </div>

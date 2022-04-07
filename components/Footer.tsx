@@ -7,9 +7,9 @@ import {
 
 export const Footer = () => {
     return (
-        <Layout.Footer className="flex flex-col justify-center items-center bg-slate-700 text-gray-100">
-            <div className="flex justify-center items-center">
-                <span>联系方式：</span>
+        <Layout.Footer className="flex flex-col justify-center bg-slate-700 text-gray-100">
+            <div className="flex items-start justify-center flex-col md:flex-row">
+                <span className="hidden md:block">联系方式：</span>
                 <div className="flex justify-center items-center mx-2">
                     <CompassOutlined className="mr-1" />
                     <span>xx省xx市xxxxx路xxxx号</span>
