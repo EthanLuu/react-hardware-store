@@ -19,7 +19,7 @@ export default function Home({ products, notice, hotsearches }) {
             <div className="flex justify-center items-center py-8 flex-col px-6 lg:px-12 xl:px-24 bg-slate-200">
                 <h2 className="text-3xl font-bold text-gray-600">产品中心</h2>
                 <div className="w-24 h-1 bg-blue-400 m-4"></div>
-                <div className="py-4">
+                <div className="py-4 w-full">
                     <ProductCenter products={products} />
                 </div>
 
