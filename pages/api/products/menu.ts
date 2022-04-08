@@ -1,4 +1,3 @@
-import { Collection, ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
 import { Product } from ".";
 import clientPromise from "../../../lib/mongodb";

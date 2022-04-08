@@ -1,6 +1,7 @@
 import { Carousel } from "antd";
 import { useRef } from "react";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { CarouselItem } from "../pages/api/shopinfo/carousel";
 
 const LeftArrow = ({ onClick }) => {
     return (
@@ -30,28 +31,23 @@ const RightArrow = ({ onClick }) => {
     );
 };
 
-export const HomeCarousel = () => {
+export const HomeCarousel = ({ carousels }: { carousels: CarouselItem[] }) => {
     const carousel = useRef(null);
-    const covers = [
-        "https://cdn.ethanloo.cn/img/202204060003553.png",
-        "https://cdn.ethanloo.cn/img/202204060003553.png",
-        "https://cdn.ethanloo.cn/img/202204060003553.png"
-    ];
     return (
         <Carousel
-            autoplay
+            // autoplay
             effect="fade"
             ref={carousel}
             arrows={true}
             prevArrow={<LeftArrow onClick={() => carousel.current.prev()} />}
             nextArrow={<RightArrow onClick={() => carousel.current.next()} />}
         >
-            {covers.map((p, idx) => (
-                <div
-                    className="flex relative justify-center items-center text-center bg-cover"
-                    key={idx}
-                >
-                    <img src={p} className="object-cover block h-full w-full" />
+            {carousels.map((c) => (
+                <div key={c._id}>
+                    <img
+                        src={c.image}
+                        className="object-cover block m-auto"
+                    />
                 </div>
             ))}
         </Carousel>

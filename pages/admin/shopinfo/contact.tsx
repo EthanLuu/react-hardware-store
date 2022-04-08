@@ -11,6 +11,7 @@ import {
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
+import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
 import clientPromise from "../../../lib/mongodb";
 import { ContactItem } from "../../api/shopinfo/contact";
@@ -98,7 +99,11 @@ export default function Contact({
 }
 
 Contact.getLayout = function getLayout(page: ReactElement) {
-    return <AdminLayout>{page}</AdminLayout>;
+    return (
+        <Auth>
+            <AdminLayout>{page}</AdminLayout>
+        </Auth>
+    );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

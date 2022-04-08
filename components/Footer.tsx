@@ -4,23 +4,34 @@ import {
     PhoneOutlined,
     WechatOutlined
 } from "@ant-design/icons";
+import { api } from "../lib/api";
+import { useEffect, useState } from "react";
+import { ContactItem } from "../pages/api/shopinfo/contact";
 
 export const Footer = () => {
+    const [contacts, setContacts] = useState<ContactItem[]>([]);
+    useEffect(() => {
+        api.get("/shopinfo/contact")
+            .then((res) => res.data)
+            .then((contacts) => {
+                setContacts(contacts.data);
+            });
+    }, []);
     return (
         <Layout.Footer className="flex flex-col justify-center bg-slate-700 text-gray-100">
-            <div className="flex items-start justify-center flex-col md:flex-row">
+            <div className="flex flex-col md:flex-row items-start">
                 <span className="hidden md:block">联系方式：</span>
                 <div className="flex justify-center items-center mx-2">
                     <CompassOutlined className="mr-1" />
-                    <span>xx省xx市xxxxx路xxxx号</span>
+                    <span>{contacts?.find(x => x.key === "address")?.value}</span>
                 </div>
                 <div className="flex justify-center items-center mx-2">
                     <PhoneOutlined className="mr-1" />
-                    <span>12300000000</span>
+                    <span>{contacts?.find(x => x.key === "phone")?.value}</span>
                 </div>
                 <div className="flex justify-center items-center mx-2">
                     <WechatOutlined className="mr-1" />
-                    <span>wechat</span>
+                    <span>{contacts?.find(x => x.key === "wechat")?.value}</span>
                 </div>
             </div>
             <Divider className=" border-slate-200 w-full" />

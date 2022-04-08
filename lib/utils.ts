@@ -1,4 +1,6 @@
 import axios from "axios";
+import { useAccountContext } from "../contexts/AccountContext";
+import { api } from "./api";
 
 export const getTodayString = () => {
     const today = new Date();
@@ -42,4 +44,26 @@ export const normFile = (e: any) => {
         return e;
     }
     return e && e.fileList;
+};
+
+export const getToken = () => {
+    return localStorage.getItem("dx-token");
+};
+
+export const loginByToken = async () => {
+    const token = getToken();
+    if (!token) return false;
+    const { data, statusText, status } = await api.post(
+        "/user/login",
+        {},
+        {
+            headers: {
+                authorization: token
+            }
+        }
+    );
+    if (status !== 200) {
+        return false;
+    }
+    return data;
 };

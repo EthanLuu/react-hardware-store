@@ -12,6 +12,7 @@ import {
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
+import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
 import clientPromise from "../../../lib/mongodb";
 import { HotSearchItem } from "../../api/shopinfo/hotsearch";
@@ -79,7 +80,7 @@ export default function HotSearch({
     const router = useRouter();
     return (
         <div className="w-full">
-            <PageHeader title="热门关键词" onBack={router.back}/>
+            <PageHeader title="热门搜索" onBack={router.back} />
             <div className="flex w-full flex-col gap-4 justify-center items-center">
                 <div>
                     <Button
@@ -112,8 +113,8 @@ export default function HotSearch({
                             <Popconfirm
                                 title="是否确认删除该关键词？"
                                 onConfirm={() => handleDelete(item)}
-                            >
-                                <Button danger type="primary">
+                            >   
+                                <Button danger>
                                     删除
                                 </Button>
                             </Popconfirm>
@@ -138,7 +139,11 @@ export default function HotSearch({
 }
 
 HotSearch.getLayout = function getLayout(page: ReactElement) {
-    return <AdminLayout>{page}</AdminLayout>;
+    return (
+        <Auth>
+            <AdminLayout>{page}</AdminLayout>
+        </Auth>
+    );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

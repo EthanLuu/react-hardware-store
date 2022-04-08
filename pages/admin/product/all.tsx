@@ -21,6 +21,7 @@ import clientPromise from "../../../lib/mongodb";
 import { Product } from "../../api/products";
 import axios from "axios";
 import { normFile } from "../../../lib/utils";
+import { Auth } from "../../../components/Auth";
 
 export default function AllProduct({
     products,
@@ -209,7 +210,11 @@ export default function AllProduct({
 }
 
 AllProduct.getLayout = function getLayout(page: ReactElement) {
-    return <AdminLayout>{page}</AdminLayout>;
+    return (
+        <Auth>
+            <AdminLayout>{page}</AdminLayout>
+        </Auth>
+    );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

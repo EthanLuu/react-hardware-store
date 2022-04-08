@@ -43,10 +43,15 @@ export const AdminSider = () => {
             icon: <IdcardOutlined />,
             pathname: "/admin/shopinfo",
             children: [
+                // {
+                //     key: "notice",
+                //     name: "首页公告",
+                //     pathname: "/admin/shopinfo/notice"
+                // },
                 {
-                    key: "notice",
-                    name: "首页公告",
-                    pathname: "/admin/shopinfo/notice"
+                    key: "carousel",
+                    name: "首页头图",
+                    pathname: "/admin/shopinfo/carousel"
                 },
                 {
                     key: "hotsearch",

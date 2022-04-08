@@ -1,4 +1,5 @@
 import { ReactElement } from "react";
+import { Auth } from "../../components/Auth";
 import { AdminLayout } from "../../components/Layout";
 
 export default function Index() {
@@ -6,5 +7,9 @@ export default function Index() {
 }
 
 Index.getLayout = function getLayout(page: ReactElement) {
-    return <AdminLayout>{page}</AdminLayout>;
+    return (
+        <Auth>
+            <AdminLayout>{page}</AdminLayout>
+        </Auth>
+    );
 };

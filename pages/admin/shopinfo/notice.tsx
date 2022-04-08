@@ -2,7 +2,9 @@ import { Button, Form, Input, message, PageHeader } from "antd";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { ReactElement } from "react";
+import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
+import { api } from "../../../lib/api";
 import clientPromise from "../../../lib/mongodb";
 import { NoticeItem } from "../../api/shopinfo/notice";
 
@@ -21,17 +23,13 @@ export default function Notice({
             rows: values.content.split("\n")
         };
         try {
-            const response = await fetch(
-                noticeURI,
-                {
-                    method: "PUT",
-                    body: JSON.stringify(newNotice),
-                    headers: {
-                        "Content-Type": "application/json"
-                    }
+            const { data } = await api.put(noticeURI, {
+                method: "PUT",
+                body: JSON.stringify(newNotice),
+                headers: {
+                    "Content-Type": "application/json"
                 }
-            );
-            const data = (await response.json()).data;
+            });
             if (data) {
                 message.success("保存成功");
             }
@@ -79,7 +77,11 @@ export default function Notice({
 }
 
 Notice.getLayout = function getLayout(page: ReactElement) {
-    return <AdminLayout>{page}</AdminLayout>;
+    return (
+        <Auth>
+            <AdminLayout>{page}</AdminLayout>
+        </Auth>
+    );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

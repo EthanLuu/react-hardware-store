@@ -7,6 +7,8 @@ import { normFile } from "../../../lib/utils";
 import axios from "axios";
 import { GetServerSideProps } from "next";
 import clientPromise from "../../../lib/mongodb";
+import { Auth } from "../../../components/Auth";
+import { api } from "../../../lib/api";
 
 export default function AddProduct({
     productURL,
@@ -17,9 +19,6 @@ export default function AddProduct({
 }) {
     const router = useRouter();
     const [form] = Form.useForm();
-    const api = axios.create({
-        baseURL: productURL
-    });
     const handleSubmit = async (values: any) => {
         const product = {
             title: values.title,
@@ -32,7 +31,7 @@ export default function AddProduct({
             inCarousel: values.inCarousel,
             note: values.note
         };
-        const response = await api.post("/", product);
+        const response = await api.post("/products", product);
         if (response.data) {
             message.success("添加成功");
             form.resetFields();
@@ -97,7 +96,11 @@ export default function AddProduct({
 }
 
 AddProduct.getLayout = function getLayout(page: ReactElement) {
-    return <AdminLayout>{page}</AdminLayout>;
+    return (
+        <Auth>
+            <AdminLayout>{page}</AdminLayout>
+        </Auth>
+    );
 };
 
 export const getServerSideProps: GetServerSideProps = async (context) => {

@@ -4,6 +4,7 @@ import { ConfigProvider } from "antd";
 import type { ReactElement, ReactNode } from "react";
 import type { NextPage } from "next";
 import type { AppProps } from "next/app";
+import { AccountContextWrapper } from "../contexts/AccountContext";
 
 type NextPageWithLayout = NextPage & {
     getLayout?: (page: ReactElement) => ReactNode;
@@ -16,9 +17,11 @@ type AppPropsWithLayout = AppProps & {
 export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
     const getLayout = Component.getLayout ?? ((page) => page);
 
-    return getLayout(
+    return (
         <ConfigProvider locale={zhCN}>
-            <Component {...pageProps} />
+            <AccountContextWrapper>
+                {getLayout(<Component {...pageProps} />)}
+            </AccountContextWrapper>
         </ConfigProvider>
     );
 }

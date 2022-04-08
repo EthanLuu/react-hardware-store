@@ -11,14 +11,14 @@ import Link from "next/link";
 import { About } from "../components/About";
 import Head from "next/head";
 
-export default function Home({ products, notice, hotsearches }) {
+export default function Home({ products, notice, hotsearches, carousels }) {
     return (
         <div className="w-full">
             <Head>
                 <title>东鑫商行</title>
             </Head>
             <div className="flex flex-col bg-white relative">
-                <HomeCarousel />
+                <HomeCarousel carousels={carousels} />
             </div>
             <div className="flex justify-center items-center py-8 flex-col px-6 lg:px-12 xl:px-24 bg-slate-200">
                 <h2 className="text-3xl font-bold text-gray-600">产品中心</h2>
@@ -60,11 +60,13 @@ export async function getServerSideProps() {
     });
     const { data: noticeData } = await api.get("/shopinfo/notice");
     const { data: hotsearchesData } = await api.get("/shopinfo/hotsearch");
+    const { data: carouselData } = await api.get("/shopinfo/carousel");
     return {
         props: {
             products: productsData.data || [],
             notice: noticeData.data || {},
-            hotsearches: hotsearchesData.data || []
+            hotsearches: hotsearchesData.data || [],
+            carousels: carouselData.data || []
         }
     };
 }
