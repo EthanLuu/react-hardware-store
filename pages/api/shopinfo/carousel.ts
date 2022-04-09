@@ -63,7 +63,7 @@ apiRoute.delete(async (req, res) => {
     const db = client.db("hard-shop");
     const collection = db.collection("carousels");
     const result = collection.findOneAndDelete({
-        _id: new ObjectId(req.body._id)
+        _id: new ObjectId(req.query._id as string)
     });
     res.json({
         code: 0,

@@ -32,7 +32,7 @@ apiRoute.get(async (req, res) => {
     } else if (req.query?.skip && req.query?.limit) {
         res.json(await getProductsByPage(req, products));
     } else {
-        res.json(await getAllProducts(products));
+        res.json(await getAllProducts(req, products));
     }
 });
 
@@ -57,16 +57,26 @@ const getCarouselProducts = async (colletion: Collection<Product>) => {
     return { data: products };
 };
 
-const getAllProducts = async (collection: Collection<Product>) => {
-    const products = await collection.find({}).toArray();
-    return {
-        data: products
-    };
+const getAllProducts = async (
+    req: NextApiRequest,
+    collection: Collection<Product>
+) => {
+    const { query } = req;
+    const allowKeys = ["brand", "category"];
+    let filter = {};
+    for (let [key, value] of Object.entries(query)) {
+        if (allowKeys.includes(key)) {
+            filter[key] = value;
+        }
+    }
+    const products = await collection.find(filter).toArray();
+    const count = (await collection.find(filter).toArray()).length;
+    return { data: products, count };
 };
 
 const getProductsByPage = async (
     req: NextApiRequest,
-    colletion: Collection<Product>
+    collection: Collection<Product>
 ) => {
     const { query } = req;
     const allowKeys = ["brand", "category"];
@@ -78,12 +88,12 @@ const getProductsByPage = async (
             filter[key] = value;
         }
     }
-    const products = await colletion
+    const products = await collection
         .find(filter)
         .skip(skip)
         .limit(limit)
         .toArray();
-    const count = (await colletion.find(filter).toArray()).length;
+    const count = (await collection.find(filter).toArray()).length;
     return { data: products, count };
 };
 

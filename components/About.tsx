@@ -1,12 +1,13 @@
-import { Card, List } from "antd";
+import { Card, List, Row } from "antd";
 import {
     HeartOutlined,
     ShopOutlined,
     GoldOutlined,
     SmileOutlined
 } from "@ant-design/icons";
+import { AboutItem } from "../pages/api/shopinfo/about";
 
-export const About = () => {
+export const About = ({ about }: { about: AboutItem }) => {
     const cardItems = [
         {
             title: "品种多样",
@@ -32,12 +33,15 @@ export const About = () => {
     return (
         <div className="flex flex-col justify-center items-center w-full">
             <h3 className="text-2xl font-semibold text-gray-600 mb-6">
-                张家港市东鑫电器商行
+                {about?.title || "张家港市东鑫电器商行"}
             </h3>
-            <p className="text-gray-500 text-lg mb-6">
-                本商行是一家xxxxxx，主要经营xxxxxxxx，店铺位于xxxxxx，经营时间xxxx。
-                本商行是一家xxxxxx，主要经营xxxxxxxx，店铺位于xxxxxx，经营时间xxxx
-            </p>
+            <div>
+                {about?.rows?.map((row, idx) => (
+                    <Row key={idx} className="text-gray-500 text-lg mb-6">
+                        {row}
+                    </Row>
+                ))}
+            </div>
             <List
                 className="w-full"
                 grid={{

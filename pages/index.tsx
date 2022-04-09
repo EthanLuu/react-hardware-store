@@ -11,7 +11,7 @@ import Link from "next/link";
 import { About } from "../components/About";
 import Head from "next/head";
 
-export default function Home({ products, notice, hotsearches, carousels }) {
+export default function Home({ products, notice, hotsearches, carousels, about }) {
     return (
         <div className="w-full">
             <Head>
@@ -36,7 +36,7 @@ export default function Home({ products, notice, hotsearches, carousels }) {
                 <h2 className="text-3xl font-bold text-gray-600">关于本店</h2>
                 <div className="w-24 h-1 bg-blue-400 m-4"></div>
                 <div className="pt-4 w-full">
-                    <About />
+                    <About about={about}/>
                 </div>
             </div>
             <div className="flex justify-center items-center py-8 flex-col bg-slate-200">
@@ -61,12 +61,14 @@ export async function getServerSideProps() {
     const { data: noticeData } = await api.get("/shopinfo/notice");
     const { data: hotsearchesData } = await api.get("/shopinfo/hotsearch");
     const { data: carouselData } = await api.get("/shopinfo/carousel");
+    const { data: aboutData } = await api.get("/shopinfo/about");
     return {
         props: {
             products: productsData.data || [],
             notice: noticeData.data || {},
             hotsearches: hotsearchesData.data || [],
-            carousels: carouselData.data || []
+            carousels: carouselData.data || [],
+            about: aboutData.data || {},
         }
     };
 }

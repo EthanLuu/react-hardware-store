@@ -32,7 +32,7 @@ export const ListMenu = ({
         } else {
             setSelectedMenu(null);
         }
-    }, [router.query]);
+    }, [router]);
     return (
         <div className="p-2 px-4 bg-white rounded-md shadow-sm">
             <Row className="py-1">

@@ -54,6 +54,11 @@ export const AdminSider = () => {
                     pathname: "/admin/shopinfo/carousel"
                 },
                 {
+                    key: "about",
+                    name: "关于本店",
+                    pathname: "/admin/shopinfo/about"
+                },
+                {
                     key: "hotsearch",
                     name: "热门关键词",
                     pathname: "/admin/shopinfo/hotsearch"
