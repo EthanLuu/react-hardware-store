@@ -19,7 +19,7 @@ export default function Search({ products }: { products: Product[] }) {
         setCurrentProducts(
             products.slice((page - 1) * pageSize, page * pageSize)
         );
-    }, [page]);
+    }, [page, router]);
 
     return (
         <div className="w-full">
