@@ -1,42 +1,53 @@
-import { Collection } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "../../../lib/mongodb";
+import nextConnect from "next-connect";
+import { ResponseCode } from "../../../lib/api";
+import { authMiddleware } from "../../../lib/middlewares";
+import { getCollectionByName } from "../../../lib/mongodb";
 
 export interface HotSearchItem {
-    _id: string;
+    _id?: string;
     key: string;
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const client = await clientPromise;
-    const db = client.db("hard-shop");
-    const collection = db.collection("hotsearch");
-    if (req.method === "GET") {
-        res.json(await getAllHotSearch(collection));
-    } else if (req.method === "POST") {
-        res.json(await addOneHotSearch(req, collection));
-    } else if (req.method === "DELETE") {
-        res.json(await deleteHotSearch(req, collection));
+const apiRoute = nextConnect<NextApiRequest, NextApiResponse>();
+
+apiRoute.use(authMiddleware);
+
+apiRoute.get(async (req, res) => {
+    const collection = await getCollectionByName("hotsearch");
+    const hotsearches = await collection.find({}).toArray();
+    res.json({
+        code: ResponseCode.Success,
+        data: hotsearches
+    });
+});
+
+apiRoute.post(async (req, res) => {
+    const collection = await getCollectionByName<HotSearchItem>("hotsearch");
+    const { key } = req.body;
+    if (!key) {
+        res.json({
+            code: ResponseCode.Fail,
+            message: "请确保关键词不为空"
+        });
     }
-};
+    const result = await collection.insertOne({ key: req.body.key });
+    res.json({
+        code: ResponseCode.Success,
+        data: result
+    });
+});
 
-const getAllHotSearch = async (colletion: Collection) => {
-    const hotsearches = await colletion.find({}).toArray();
-    return { data: hotsearches };
-};
-
-const addOneHotSearch = async (req: NextApiRequest, collection: Collection) => {
-    const hotsearch = { key: req.body.key };
-    const savedHotsearch = await collection.insertOne(hotsearch);
-    return { data: savedHotsearch };
-};
-
-const deleteHotSearch = async (req: NextApiRequest, collection: Collection) => {
-    let data;
-    if (req.body.key) {
-        data = await collection.deleteMany({ key: req.body.key });
-    } else {
-        data = await collection.deleteMany({});
+apiRoute.delete(async (req, res) => {
+    const collection = await getCollectionByName("hotsearch");
+    const { key } = req.query;
+    if (!key) {
     }
-    return { data };
-};
+    const result = await collection.deleteMany({ key });
+    res.json({
+        code: ResponseCode.Success,
+        data: result
+    });
+});
+
+export default apiRoute;

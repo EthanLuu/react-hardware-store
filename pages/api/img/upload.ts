@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import nc from "next-connect";
 import multer from "multer";
+import { ResponseCode } from "../../../lib/api";
 
 const upload = multer({
     storage: multer.diskStorage({
@@ -11,11 +12,7 @@ const upload = multer({
     })
 });
 
-const apiRoute = nc<NextApiRequest, NextApiResponse>({
-    onNoMatch(req, res) {
-        res.status(404).end("page not found");
-    }
-});
+const apiRoute = nc<NextApiRequest, NextApiResponse>();
 
 const uploadMiddleware = upload.single("image");
 
@@ -23,7 +20,7 @@ apiRoute.use(uploadMiddleware);
 
 apiRoute.post((req, res) => {
     res.status(200).json({
-        message: "success"
+        code: ResponseCode.Success
     });
 });
 

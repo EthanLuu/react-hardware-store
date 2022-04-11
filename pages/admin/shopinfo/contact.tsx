@@ -13,16 +13,11 @@ import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
+import { api, ResponseCode } from "../../../lib/api";
 import clientPromise from "../../../lib/mongodb";
 import { ContactItem } from "../../api/shopinfo/contact";
 
-export default function Contact({
-    contacts,
-    contactURI
-}: {
-    contacts: ContactItem[];
-    contactURI: string;
-}) {
+export default function Contact({ contacts }: { contacts: ContactItem[] }) {
     const router = useRouter();
     const [form] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState(false);
@@ -56,15 +51,11 @@ export default function Contact({
     const handleSubmit = async () => {
         const key = editItem.key;
         const value = form.getFieldValue("value");
-        const response = await fetch(contactURI, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ key, value })
+        const { data } = await api.put("/shopinfo/contact", {
+            key,
+            value
         });
-        const { data } = await response.json();
-        data
+        data.code === ResponseCode.Success
             ? message.success("编辑成功") && setIsModalVisible(false)
             : message.error("编辑失败");
     };
@@ -108,13 +99,11 @@ Contact.getLayout = function getLayout(page: ReactElement) {
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     await clientPromise;
-    const contactURI = `${process.env.API_BASE}/shopinfo/contact`;
-    const response = await fetch(contactURI);
-    const contacts = (await response.json()).data;
+    const { data: res } = await api.get("/shopinfo/contact");
+    const contacts = res.data;
     return {
         props: {
-            contacts,
-            contactURI
+            contacts
         }
     };
 };

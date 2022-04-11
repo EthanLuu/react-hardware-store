@@ -1,6 +1,9 @@
-import { Collection, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "../../../lib/mongodb";
+import nextConnect from "next-connect";
+import { ResponseCode } from "../../../lib/api";
+import { authMiddleware } from "../../../lib/middlewares";
+import { getCollectionByName } from "../../../lib/mongodb";
 
 export interface NoticeItem {
     _id: string;
@@ -8,33 +11,23 @@ export interface NoticeItem {
     rows: string[];
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const client = await clientPromise;
-    const db = client.db("hard-shop");
-    const collection = db.collection("notice");
-    if (req.method === "GET") {
-        res.json(await getNotice(collection));
-    } else if (req.method === "POST") {
-        res.json(await addNotice(req, collection));
-    } else if (req.method === "PUT") {
-        res.json(await saveNotice(req, collection));
-    }
-};
+const apiRoute = nextConnect<NextApiRequest, NextApiResponse>();
 
-const getNotice = async (colletion: Collection) => {
-    const notice = await colletion.findOne({});
-    return { data: notice };
-};
+apiRoute.use(authMiddleware);
 
-const addNotice = async (req: NextApiRequest, collection: Collection) => {
+apiRoute.get(async (req, res) => {
+    const collection = await getCollectionByName("notice");
+    const notice = await collection.findOne();
+    res.json({
+        code: ResponseCode.Success,
+        data: notice
+    });
+});
+
+apiRoute.put(async (req, res) => {
+    const collection = await getCollectionByName("notice");
     const notice = req.body;
-    const savedNotice = await collection.insertOne(notice);
-    return { data: savedNotice };
-};
-
-const saveNotice = async (req: NextApiRequest, collection: Collection) => {
-    const notice = req.body;
-    const savedNotice = await collection.findOneAndUpdate(
+    const result = await collection.findOneAndUpdate(
         {
             _id: new ObjectId(notice._id)
         },
@@ -45,5 +38,10 @@ const saveNotice = async (req: NextApiRequest, collection: Collection) => {
             }
         }
     );
-    return { data: savedNotice };
-};
+    res.json({
+        code: 0,
+        data: result
+    });
+});
+
+export default apiRoute;

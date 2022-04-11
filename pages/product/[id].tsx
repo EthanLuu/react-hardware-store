@@ -33,7 +33,7 @@ const SeachTag = ({
 export default function ProductDetailPage({ product }: { product: Product }) {
     const router = useRouter();
     return (
-        <div className="max-w-3xl w-full">
+        <div className="max-w-4xl w-full">
             <Head>
                 <title>{`${product.title}-东鑫商行`}</title>
                 <meta
@@ -69,6 +69,7 @@ export default function ProductDetailPage({ product }: { product: Product }) {
             ></PageHeader>
             <Descriptions
                 bordered
+                className="shadow-sm"
                 column={{ xs: 1, sm: 1, md: 2 }}
                 labelStyle={{
                     fontWeight: 600,
@@ -76,10 +77,16 @@ export default function ProductDetailPage({ product }: { product: Product }) {
                     textAlign: "center"
                 }}
             >
-                <Descriptions.Item label={"名称"} className="bg-white">
+                <Descriptions.Item
+                    label={"名称"}
+                    className="bg-white border-slate-600"
+                >
                     {product.title}
                 </Descriptions.Item>
-                <Descriptions.Item label={"种类"} className="bg-white">
+                <Descriptions.Item
+                    label={"种类"}
+                    className="bg-white border-slate-600"
+                >
                     {product.category}
                 </Descriptions.Item>
                 <Descriptions.Item label={"品牌"} className="bg-white">
@@ -91,12 +98,11 @@ export default function ProductDetailPage({ product }: { product: Product }) {
                     </Descriptions.Item>
                 ) : null}
             </Descriptions>
-            <div className="mt-6">
+            <div className="mt-4">
                 <Image
-                    height={"400px"}
                     width={"100%"}
                     src={product.image}
-                    className="object-cover shadow-sm"
+                    className="object-cover shadow-sm max-h-screen"
                     alt={product.title}
                 ></Image>
             </div>

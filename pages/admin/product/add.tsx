@@ -3,20 +3,11 @@ import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import { AdminLayout } from "../../../components/Layout";
 import { UploadOutlined } from "@ant-design/icons";
-import { normFile } from "../../../lib/utils";
-import axios from "axios";
-import { GetServerSideProps } from "next";
-import clientPromise from "../../../lib/mongodb";
+import { compressImageFile, normFile } from "../../../lib/utils";
 import { Auth } from "../../../components/Auth";
 import { api } from "../../../lib/api";
 
-export default function AddProduct({
-    productURL,
-    imageURL
-}: {
-    productURL: string;
-    imageURL: string;
-}) {
+export default function AddProduct() {
     const router = useRouter();
     const [form] = Form.useForm();
     const handleSubmit = async (values: any) => {
@@ -26,13 +17,13 @@ export default function AddProduct({
             category: values.category,
             image:
                 values.upload?.length > 0
-                    ? `${imageURL}/${values.upload[0].name}`
+                    ? `/uploads/${values.upload[0].name}`
                     : "",
             inCarousel: values.inCarousel,
             note: values.note
         };
-        const response = await api.post("/products", product);
-        if (response.data) {
+        const { data } = await api.post("/products", product);
+        if (data) {
             message.success("添加成功");
             form.resetFields();
         } else {
@@ -63,6 +54,7 @@ export default function AddProduct({
                         getValueFromEvent={normFile}
                     >
                         <Upload
+                            beforeUpload={compressImageFile}
                             accept="image/*"
                             name="image"
                             listType="picture"
@@ -101,16 +93,4 @@ AddProduct.getLayout = function getLayout(page: ReactElement) {
             <AdminLayout>{page}</AdminLayout>
         </Auth>
     );
-};
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-    await clientPromise;
-    const productURL = `${process.env.API_BASE}/products`;
-    const imageURL = `${process.env.BASE_URL}/uploads`;
-    return {
-        props: {
-            productURL,
-            imageURL
-        }
-    };
 };

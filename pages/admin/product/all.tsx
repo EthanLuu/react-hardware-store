@@ -22,21 +22,20 @@ import { Product } from "../../api/products";
 import axios from "axios";
 import { normFile } from "../../../lib/utils";
 import { Auth } from "../../../components/Auth";
+import { api } from "../../../lib/api";
 
-export default function AllProduct({
-    products,
-    productURI,
-    imageURL
-}: {
-    products: Product[];
-    productURI: string;
-    imageURL: string;
-}) {
+export default function AllProduct({ products }: { products: Product[] }) {
     const router = useRouter();
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [editItem, setEditItem] = useState<Product>(null);
     const [form] = Form.useForm();
 
+    const categorySet = new Set<string>();
+    const brandSet = new Set<string>();
+    for (let p of products) {
+        categorySet.add(p.category);
+        brandSet.add(p.brand);
+    }
     const columns: TableColumnsType<Product> = [
         {
             title: "名称",
@@ -44,11 +43,21 @@ export default function AllProduct({
         },
         {
             title: "种类",
-            dataIndex: "category"
+            dataIndex: "category",
+            filters: Array.from(categorySet).reduce((pre, cur) => {
+                pre.push({ text: cur, value: cur });
+                return pre;
+            }, []),
+            onFilter: (v, item) => item.category === v
         },
         {
             title: "品牌",
-            dataIndex: "brand"
+            dataIndex: "brand",
+            filters: Array.from(brandSet).reduce((pre, cur) => {
+                pre.push({ text: cur, value: cur });
+                return pre;
+            }, []),
+            onFilter: (v, item) => item.brand === v
         },
         {
             title: "备注",
@@ -56,6 +65,7 @@ export default function AllProduct({
         },
         {
             title: "首页展示",
+            sorter: (a, b) => (a.inCarousel ? 1 : -1),
             render: (_, item) => (
                 <Switch
                     defaultChecked={item.inCarousel}
@@ -97,23 +107,15 @@ export default function AllProduct({
     ];
 
     const handleDelete = async (item: Product) => {
-        const response = await fetch(productURI, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ id: item._id.toString() })
-        });
-        const { data } = await response.json();
+        const { data } = await api.delete(`/products/${item._id.toString()}`);
         data ? message.success("删除成功") : message.error("删除失败");
     };
 
     const handleCarousel = async (item: Product) => {
-        const response = await axios.post(
-            `${productURI}/${item._id.toString()}`,
-            { ...item, inCarousel: !item.inCarousel }
-        );
-        const data = response;
+        const { data } = await api.post(`/products/${item._id.toString()}`, {
+            ...item,
+            inCarousel: !item.inCarousel
+        });
         data ? message.success("切换成功") : message.error("切换失败");
     };
 
@@ -129,13 +131,12 @@ export default function AllProduct({
             note
         };
         if (upload?.length > 0) {
-            newProduct.image = `${imageURL}/${upload[0].name}`;
+            newProduct.image = `/uploads/${upload[0].name}`;
         }
-        const response = await axios.post(
-            `${productURI}/${editItem._id.toString()}`,
+        const { data } = await api.post(
+            `/products/${editItem._id.toString()}`,
             newProduct
         );
-        const data = response;
         data ? message.success("编辑成功") : message.error("编辑失败");
         setIsModalVisible(false);
     };
@@ -149,6 +150,10 @@ export default function AllProduct({
                 columns={columns}
                 dataSource={products}
                 rowKey="_id"
+                pagination={{
+                    position: ["bottomRight"],
+                    pageSize: 4
+                }}
             ></Table>
             <Modal
                 destroyOnClose={true}
@@ -226,8 +231,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return {
         props: {
             products,
-            productURI,
-            imageURL: `${process.env.BASE_URL}/uploads`
+            productURI
         }
     };
 };

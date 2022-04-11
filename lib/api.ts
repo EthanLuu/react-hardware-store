@@ -10,3 +10,8 @@ if (process.env.NODE_ENV === "development") {
 export const api = axios.create({
     baseURL
 });
+
+export enum ResponseCode {
+    Success = 0,
+    Fail = 1
+}

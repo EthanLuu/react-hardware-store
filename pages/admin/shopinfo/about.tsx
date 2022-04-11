@@ -4,12 +4,13 @@ import { useRouter } from "next/router";
 import { ReactElement } from "react";
 import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
-import { api } from "../../../lib/api";
+import { api, ResponseCode } from "../../../lib/api";
 import clientPromise from "../../../lib/mongodb";
 import { AboutItem } from "../../api/shopinfo/about";
 
 export default function Notice({ about }: { about: AboutItem }) {
     const [form] = Form.useForm();
+    const router = useRouter();
     const handleSubmit = async (values: any) => {
         const newAbout = {
             ...about,
@@ -17,14 +18,19 @@ export default function Notice({ about }: { about: AboutItem }) {
             rows: values.content.split("\n")
         };
         const { data: res } = await api.put("/shopinfo/about", newAbout);
-        if (res?.code === 0) {
+        if (res?.code === ResponseCode.Success) {
             message.success("保存成功");
+            router.reload();
         } else {
             message.error(`保存失败`);
         }
     };
-    const router = useRouter();
-    const handleReset = () => {};
+    const handleReset = () => {
+        form.setFieldsValue({
+            title: about.title,
+            content: about.rows.join("\n")
+        });
+    };
     return (
         <div className="w-full">
             <PageHeader title="首页公告" onBack={router.back} />

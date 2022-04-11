@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { ReactElement, useEffect, useState } from "react";
 import { Layout } from "../components/Layout";
 import { ProductList } from "../components/ProductList";
+import { SearchBar } from "../components/SearchBar";
 import { api } from "../lib/api";
 import clientPromise from "../lib/mongodb";
 import { Product } from "./api/products";
@@ -25,6 +26,9 @@ export default function Search({ products }: { products: Product[] }) {
             <Head>
                 <title>搜索-东鑫商行</title>
             </Head>
+            <div className="max-w-sm m-auto mb-4">
+                <SearchBar size={"large"} />
+            </div>
             <div className="flex justify-center items-center text-2xl font-semibold mb-4">
                 <h1>搜索关键词：{router.query.key}</h1>
             </div>

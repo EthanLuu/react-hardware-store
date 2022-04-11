@@ -1,3 +1,4 @@
+import { RcFile } from "antd/lib/upload";
 import axios from "axios";
 import { useAccountContext } from "../contexts/AccountContext";
 import { api } from "./api";
@@ -66,4 +67,23 @@ export const loginByToken = async () => {
         return false;
     }
     return data;
+};
+
+export const compressImageFile: any = (file: RcFile) => {
+    return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => {
+            const img = document.createElement("img");
+            img.src = reader.result as string;
+            img.onload = () => {
+                const canvas = document.createElement("canvas");
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+                const ctx = canvas.getContext("2d");
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                canvas.toBlob(resolve, "image/jpeg", 0.7);
+            };
+        };
+    });
 };

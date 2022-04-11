@@ -1,6 +1,6 @@
 import { Collection, ObjectId } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "../../../lib/mongodb";
+import { getCollectionByName } from "../../../lib/mongodb";
 import nc from "next-connect";
 import { authMiddleware } from "../../../lib/middlewares";
 
@@ -15,39 +15,24 @@ export interface Product {
     note: string;
 }
 
-const apiRoute = nc<NextApiRequest, NextApiResponse>({
-    onNoMatch(req, res) {
-        res.status(404).end("page not found");
-    }
-});
+const apiRoute = nc<NextApiRequest, NextApiResponse>();
 
 apiRoute.use(authMiddleware);
 
 apiRoute.get(async (req, res) => {
-    const client = await clientPromise;
-    const db = client.db("hard-shop");
-    const products = db.collection<Product>("products");
+    const collection = await getCollectionByName<Product>("products");
     if (req.query?.inCarousel) {
-        res.json(await getCarouselProducts(products));
+        res.json(await getCarouselProducts(collection));
     } else if (req.query?.skip && req.query?.limit) {
-        res.json(await getProductsByPage(req, products));
+        res.json(await getProductsByPage(req, collection));
     } else {
-        res.json(await getAllProducts(req, products));
+        res.json(await getAllProducts(req, collection));
     }
 });
 
 apiRoute.post(async (req, res) => {
-    const client = await clientPromise;
-    const db = client.db("hard-shop");
-    const products = db.collection<Product>("products");
-    res.json(await addOneProduct(req, products));
-});
-
-apiRoute.delete(async (req, res) => {
-    const client = await clientPromise;
-    const db = client.db("hard-shop");
-    const products = db.collection<Product>("products");
-    res.json(await deleteProductById(req, products));
+    const collection = await getCollectionByName<Product>("products");
+    res.json(await addOneProduct(req, collection));
 });
 
 export default apiRoute;
@@ -104,13 +89,4 @@ const addOneProduct = async (
     const product = req.body;
     const savedProduct = await colletion.insertOne(product);
     return { data: savedProduct };
-};
-
-const deleteProductById = async (
-    req: NextApiRequest,
-    colletion: Collection<Product>
-) => {
-    const id = req.body.id;
-    const product = await colletion.findOneAndDelete({ _id: new ObjectId(id) });
-    return { data: product };
 };

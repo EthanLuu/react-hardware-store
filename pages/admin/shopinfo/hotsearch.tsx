@@ -14,15 +14,14 @@ import { useRouter } from "next/router";
 import { ReactElement, useState } from "react";
 import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
+import { api, ResponseCode } from "../../../lib/api";
 import clientPromise from "../../../lib/mongodb";
 import { HotSearchItem } from "../../api/shopinfo/hotsearch";
 
 export default function HotSearch({
-    hotsearches,
-    hotsearchURI
+    hotsearches
 }: {
     hotsearches: HotSearchItem[];
-    hotsearchURI: string;
 }) {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [form] = Form.useForm();
@@ -32,45 +31,33 @@ export default function HotSearch({
             message.warning("请确认输入关键词不为空！");
             return;
         }
-        const response = await fetch(hotsearchURI, {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ key })
-        });
-        const { data } = await response.json();
-        if (data) {
+        const { data } = await api.post("/shopinfo/hotsearch", { key });
+        if (data?.code === ResponseCode.Success) {
             message.success("添加成功");
+            router.reload();
             setIsModalVisible(false);
+        } else {
+            message.warning(`添加失败，${data.message}`);
         }
     };
 
     const handleDelete = async (item: HotSearchItem) => {
-        const response = await fetch(`${hotsearchURI}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ key: item.key })
+        const { data } = await api.delete("/shopinfo/hotsearch", {
+            params: {
+                key: item.key
+            }
         });
-        const { data } = await response.json();
-        if (data) {
+        if (data?.code === ResponseCode.Success) {
             message.success("删除成功");
+            router.reload();
         } else {
             message.error("删除失败");
         }
     };
 
     const deleteAll = async () => {
-        const response = await fetch(`${hotsearchURI}`, {
-            method: "DELETE",
-            headers: {
-                "Content-Type": "application/json"
-            }
-        });
-        const { data } = await response.json();
-        if (data) {
+        const { data } = await api.delete("/shopinfo/hotsearch");
+        if (data?.code === ResponseCode.Success) {
             message.success("删除成功");
         } else {
             message.error("删除失败");
@@ -113,10 +100,8 @@ export default function HotSearch({
                             <Popconfirm
                                 title="是否确认删除该关键词？"
                                 onConfirm={() => handleDelete(item)}
-                            >   
-                                <Button danger>
-                                    删除
-                                </Button>
+                            >
+                                <Button danger>删除</Button>
                             </Popconfirm>
                         </List.Item>
                     )}

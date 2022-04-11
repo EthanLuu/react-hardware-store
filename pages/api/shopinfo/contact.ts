@@ -1,6 +1,8 @@
-import { Collection } from "mongodb";
 import { NextApiRequest, NextApiResponse } from "next";
-import clientPromise from "../../../lib/mongodb";
+import nextConnect from "next-connect";
+import { ResponseCode } from "../../../lib/api";
+import { authMiddleware } from "../../../lib/middlewares";
+import { getCollectionByName } from "../../../lib/mongodb";
 
 export interface ContactItem {
     _id: string;
@@ -9,39 +11,32 @@ export interface ContactItem {
     value: string;
 }
 
-export default async (req: NextApiRequest, res: NextApiResponse) => {
-    const client = await clientPromise;
-    const db = client.db("hard-shop");
-    const collection = db.collection("contact");
-    if (req.method === "GET") {
-        res.json(await getAllContactInfo(collection));
-    } else if (req.method === "POST") {
-        res.json(await addOneContactInfo(req, collection));
-    } else if (req.method === "PUT") {
-        res.json(await editOneContactInfo(req, collection));
-    }
-};
+const apiRoute = nextConnect<NextApiRequest, NextApiResponse>();
 
-const getAllContactInfo = async (colletion: Collection) => {
-    const contact = await colletion.find({}).toArray();
-    return { data: contact };
-};
+apiRoute.use(authMiddleware);
 
-const addOneContactInfo = async (
-    req: NextApiRequest,
-    collection: Collection
-) => {
-    const contactInfo = req.body;
-    const savedContactInfo = await collection.insertOne(contactInfo);
-    return { data: savedContactInfo };
-};
+apiRoute.get(async (req, res) => {
+    const collection = await getCollectionByName("contact");
+    const contacts = await collection.find({}).toArray();
+    res.json({
+        code: ResponseCode.Success,
+        data: contacts
+    });
+});
 
-const editOneContactInfo = async (
-    req: NextApiRequest,
-    collection: Collection
-) => {
-    const { key, value } = req.body;
-    const savedContactInfo = await collection.findOneAndUpdate(
+apiRoute.post(async (req, res) => {
+    const collection = await getCollectionByName("contact");
+    const result = await collection.insertOne(req.body);
+    res.json({
+        code: ResponseCode.Success,
+        data: result
+    });
+});
+
+apiRoute.put(async (req, res) => {
+    const collection = await getCollectionByName("contact");
+    const { key = "", value = "" } = req.body;
+    const result = await collection.findOneAndUpdate(
         { key },
         {
             $set: {
@@ -49,5 +44,10 @@ const editOneContactInfo = async (
             }
         }
     );
-    return { data: savedContactInfo };
-};
+    res.json({
+        code: ResponseCode.Success,
+        data: result
+    });
+});
+
+export default apiRoute;

@@ -18,6 +18,7 @@ import { Auth } from "../../../components/Auth";
 import { AdminLayout } from "../../../components/Layout";
 import { api } from "../../../lib/api";
 import clientPromise from "../../../lib/mongodb";
+import { compressImageFile } from "../../../lib/utils";
 import { CarouselItem } from "../../api/shopinfo/carousel";
 
 export default function Carousel({ carousels }: { carousels: CarouselItem[] }) {
@@ -30,7 +31,9 @@ export default function Carousel({ carousels }: { carousels: CarouselItem[] }) {
             title: "图片预览",
             dataIndex: "image",
             render: (image) => {
-                return <Image src={image} className="object-cover h-48"></Image>;
+                return (
+                    <Image src={image} className="object-cover h-48"></Image>
+                );
             }
         },
         {
@@ -109,6 +112,7 @@ export default function Carousel({ carousels }: { carousels: CarouselItem[] }) {
             <PageHeader title="首页头图" onBack={router.back} />
             <div className="flex flex-col items-end">
                 <Upload
+                    beforeUpload={compressImageFile}
                     className="mb-4 text-white"
                     showUploadList={false}
                     action="/api/img/upload"

@@ -34,15 +34,14 @@ export const Header = () => {
         });
     }, [router]);
     return (
-        <Layout.Header className="bg-white flex shadow-md items-center w-full justify-between px-2 sm:px-10 fixed top-0 z-50" >
+        <Layout.Header className="bg-white bg-opacity-80 backdrop-blur-sm flex shadow-md items-center w-full justify-between px-2 sm:px-10 fixed top-0 z-50">
             <div className="flex">
                 <div className="text-xl items-center font-bold mr-4 text-neutral-700 whitespace-nowrap hidden sm:flex">
                     <Link href="/">东鑫电器商行</Link>
                 </div>
                 <Menu
                     mode="horizontal"
-                    theme="light"
-                    className="border-none bg-none"
+                    className="border-none bg-transparent"
                     selectedKeys={[selectedKey]}
                 >
                     {menuItems.map((item) => (

@@ -10,8 +10,15 @@ import { Button } from "antd";
 import Link from "next/link";
 import { About } from "../components/About";
 import Head from "next/head";
+import { SearchBar } from "../components/SearchBar";
 
-export default function Home({ products, notice, hotsearches, carousels, about }) {
+export default function Home({
+    products,
+    notice,
+    hotsearches,
+    carousels,
+    about
+}) {
     return (
         <div className="w-full">
             <Head>
@@ -36,13 +43,16 @@ export default function Home({ products, notice, hotsearches, carousels, about }
                 <h2 className="text-3xl font-bold text-gray-600">关于本店</h2>
                 <div className="w-24 h-1 bg-blue-400 m-4"></div>
                 <div className="pt-4 w-full">
-                    <About about={about}/>
+                    <About about={about} />
                 </div>
             </div>
             <div className="flex justify-center items-center py-8 flex-col bg-slate-200">
                 <h2 className="text-3xl font-bold text-gray-600">热门搜索</h2>
                 <div className="w-24 h-1 bg-blue-400 m-4"></div>
                 <div className="pt-4 w-full">
+                    <div className="max-w-md m-auto mb-6">
+                        <SearchBar size="large" />
+                    </div>
                     <RecommendTags tags={hotsearches} />
                 </div>
             </div>
@@ -68,7 +78,7 @@ export async function getServerSideProps() {
             notice: noticeData.data || {},
             hotsearches: hotsearchesData.data || [],
             carousels: carouselData.data || [],
-            about: aboutData.data || {},
+            about: aboutData.data || {}
         }
     };
 }
