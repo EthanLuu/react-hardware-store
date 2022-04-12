@@ -35,7 +35,7 @@ export const HomeCarousel = ({ carousels }: { carousels: CarouselItem[] }) => {
     const carousel = useRef(null);
     return (
         <Carousel
-            // autoplay
+            autoplay
             effect="fade"
             ref={carousel}
             arrows={true}
@@ -44,10 +44,7 @@ export const HomeCarousel = ({ carousels }: { carousels: CarouselItem[] }) => {
         >
             {carousels.map((c) => (
                 <div key={c._id}>
-                    <img
-                        src={c.image}
-                        className="object-cover block m-auto"
-                    />
+                    <img src={c.image} className="object-cover block m-auto" />
                 </div>
             ))}
         </Carousel>
