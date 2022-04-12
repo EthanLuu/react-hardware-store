@@ -15,12 +15,12 @@ import {
 import { UploadOutlined } from "@ant-design/icons";
 import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
-import { ReactElement, useEffect, useState } from "react";
+import { ReactElement, useState } from "react";
 import { AdminLayout } from "../../../components/Layout";
 import clientPromise from "../../../lib/mongodb";
 import { Product } from "../../api/products";
 import axios from "axios";
-import { normFile } from "../../../lib/utils";
+import { compressImageFile, normFile } from "../../../lib/utils";
 import { Auth } from "../../../components/Auth";
 import { api } from "../../../lib/api";
 
@@ -192,6 +192,7 @@ export default function AllProduct({ products }: { products: Product[] }) {
                         getValueFromEvent={normFile}
                     >
                         <Upload
+                            beforeUpload={compressImageFile}
                             accept="image/*"
                             name="image"
                             listType="picture"
